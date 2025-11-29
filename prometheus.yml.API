@@ -1,4 +1,5 @@
 # This file prometheus.yml.API is Prometheus configuration — specifically for monitoring backend API services hosted on the server
+# This file tells Prometheus to monitor your servers and all API services, collect their metrics every 15 seconds, and fire alerts if anything goes wrong.
 
 global:
   scrape_interval: 15s                         #  Prometheus pulls metrics every 15 seconds.
