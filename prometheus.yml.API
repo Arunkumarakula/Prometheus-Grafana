@@ -1,0 +1,41 @@
+# This file prometheus.yml.API is Prometheus configuration — specifically for monitoring backend API services hosted on the server
+
+global:
+  scrape_interval: 15s                         #  Prometheus pulls metrics every 15 seconds.
+  evaluation_interval: 15s                     #  PromQL alert rules are evaluated every 15 seconds.
+
+rule_files:                                    # Prometheus will load alerts from: /etc/prometheus/api_alerts.yml (alerts such as API down, high latency, request failures, etc.)
+  - /etc/prometheus/api_alerts.yml
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]            # Prometheus self-monitoring
+
+  - job_name: "node_exporter"
+    static_configs:
+      - targets: ["server-ip:9100"]         # Monitors CPU, RAM, disk of the server.
+
+  - job_name: "cadvisor"
+    static_configs:
+      - targets: ["server-ip:8088"]         # Monitors Docker containers on the server.
+
+  - job_name: "onprem_apis"
+    metrics_path: /metrics                 # This job monitors all API microservices as long as each service exposes /metrics (usually via Prometheus client libraries)
+    scrape_interval: 15s
+    static_configs:
+      - targets:
+          - "server-ip:8000"    # abc-backend
+          - "server-ip:8001"    # xyz-backend
+          - "server-ip:8081"    # library-backend
+          - "server-ip:8082"    # ai_backend
+          - "server-ip:3001"    # kt-backend
+          - "server-ip:3011"    # vi-admin-service-prod
+          - "server-ip:3012"    # vi-schedule-service-prod
+          - "server-ip:3013"    # vi-user-service-prod
+          - "server-ip:3014"    # vi-payment-service-prod
+          - "server-ip:9002"    # vi-admin-service-dev
+          - "server-ip:9003"    # vi-schedule-service-dev
+          - "server-ip:9004"    # vi-payment-service-dev
+          - "server-ip:9005"    # vi-user-service-dev
+          - "server-ip:3020"    # vi-backend-dev
