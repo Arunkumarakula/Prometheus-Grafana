@@ -1,0 +1,11 @@
+groups:                                #  This file contains a group of alerts called api_alerts.
+  - name: api_alerts                   
+    rules:
+      - alert: InstanceDown           # The name of the alert is InstanceDown.
+        expr: up == 0                 # the service is healthy (responding), the service is DOWN (not responding)
+        for: 2m                       # Prometheus won’t alert immediately It waits 2 minutes. If the service is still down after 2 minutes → trigger alert.
+        labels:
+          severity: critical
+        annotations:
+          summary: "Instance {{ $labels.instance }} is down"
+          description: "The target {{ $labels.job }} on {{ $labels.instance }} has been unreachable for more than 2 minutes."
